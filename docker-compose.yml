@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: mongo
+    ports:
+      - "127.0.0.1:27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    env_file:
+      - ./.env
+
+  backend-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend-app
+    command: python app.py
+    volumes:
+      - .:/app
+    depends_on:
+      - mongo
+    ports:
+      - "5055:5055"
+    env_file:
+      - ./.env
+
+volumes:
+  mongo-data:
